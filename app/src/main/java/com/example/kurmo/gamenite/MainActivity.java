@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Random;
 
 import static java.lang.Math.round;
@@ -29,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progress;
     private Button myButton;
 
+    private FirebaseDatabase database;
+
     boolean playerTurn = true;
 
     int opponentLevel = 3;
@@ -43,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        database = FirebaseDatabase.getInstance();
+
+        DatabaseReference myRef = database.getReference("message");
+
+        myRef.setValue("Hello, World!");
 
         experience = (TextView) findViewById(R.id.points);
         level = (TextView) findViewById(R.id.level);

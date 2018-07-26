@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "334277725365",
+    "firebase_url": "https://gamenite-7ca38.firebaseio.com",
+    "project_id": "gamenite-7ca38",
+    "storage_bucket": "gamenite-7ca38.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334277725365:android:62110b1af8ea2a72",
+        "android_client_info": {
+          "package_name": "com.example.kurmo.gamenite"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334277725365-uia9nkm1aar4bele6m5huj3b0mjqp9m2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kurmo.gamenite",
+            "certificate_hash": "c8f4b35db85c1f15de615e1a7887e1eb4efe7a75"
+          }
+        },
+        {
+          "client_id": "334277725365-33udkvl0fl84vjkhk2ol8fdtnqq32eo8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKWTQQyhfAi64_8RP6h7LYlA6U5Ic6bks"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334277725365-33udkvl0fl84vjkhk2ol8fdtnqq32eo8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
