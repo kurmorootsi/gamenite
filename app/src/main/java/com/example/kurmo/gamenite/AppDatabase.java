@@ -1,4 +1,4 @@
-package com.example.kurmo.points;
+package com.example.kurmo.gamenite;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;

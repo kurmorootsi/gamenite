@@ -1,4 +1,4 @@
-package com.example.kurmo.points;
+package com.example.kurmo.gamenite;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
