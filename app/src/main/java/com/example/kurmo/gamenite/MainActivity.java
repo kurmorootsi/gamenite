@@ -1,6 +1,8 @@
 package com.example.kurmo.gamenite;
 
+import android.content.Intent;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +11,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -27,12 +31,16 @@ public class MainActivity extends AppCompatActivity {
     int playerAttack = 5;
     int progressXP = 0;
 
+    private FirebaseAuth auth;
+
+
     private TextView experience;
     private TextView level;
     private ProgressBar progress;
-    private Button myButton;
+    private Button myButton, signOut;
 
-    private FirebaseDatabase database;
+    private DatabaseReference database;
+    private FirebaseAuth.AuthStateListener authListener;
 
     boolean playerTurn = true;
 
@@ -49,11 +57,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        database = FirebaseDatabase.getInstance();
+        auth = FirebaseAuth.getInstance();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        DatabaseReference myRef = database.getReference("message");
+        if (auth.getCurrentUser() != null) {
+            auth.getCurrentUser().getUid();
+        }
 
-        myRef.setValue("Hello, World!");
+        authListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user == null) {
+                    // user auth state is changed - user is null
+                    // launch login activity
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                }
+            }
+        };
+
+        signOut = (Button) findViewById(R.id.sign_out);
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signOut();
+            }
+        });
+
+
+        database = FirebaseDatabase.getInstance().getReference();
 
         experience = (TextView) findViewById(R.id.points);
         level = (TextView) findViewById(R.id.level);
@@ -61,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
         level.setText("Level: " + playerLevel);
         experience.setText("Experience: " + playerExperience);
+
+        newUser(1L, "Kurmo", "Sapakas");
 
         myButton = (Button) findViewById(R.id.rollButton);
 
@@ -72,6 +107,21 @@ public class MainActivity extends AppCompatActivity {
                 fight();
             }
         });
+    }
+
+    public void signOut() {
+        FirebaseUser User = FirebaseAuth.getInstance().getCurrentUser();
+        User = null;
+        auth.signOut();
+    }
+
+    private void getUser() {
+
+    }
+    private void newUser(Long userId, String name, String password) {
+        User user = new User(userId, name, password);
+        
+        database.child("users").child(name).setValue(user);
     }
 
     public void fight() {
