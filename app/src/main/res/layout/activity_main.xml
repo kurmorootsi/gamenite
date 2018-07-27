@@ -1,34 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
+    android:fitsSystemWindows="true"
     android:background="@drawable/newbackground">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-
+        android:layout_height="fill_parent"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
 
+
         <TextView
             android:id="@+id/points"
-            android:layout_width="248dp"
+            android:layout_width="245dp"
             android:layout_height="59dp"
+            android:layout_alignStart="@+id/progressBar"
+            android:layout_alignTop="@+id/sign_out"
             android:textColor="#FFF"
             android:textSize="30sp"
+            app:layout_anchor="@+id/rollButton"
+            app:layout_anchorGravity="top|center"
             tools:layout_editor_absoluteX="65dp"
             tools:layout_editor_absoluteY="255dp" />
 
         <TextView
             android:id="@+id/level"
-            android:layout_width="248dp"
+            android:layout_width="246dp"
             android:layout_height="59dp"
+            android:layout_alignStart="@+id/points"
+            android:layout_below="@+id/points"
             android:textColor="#FFF"
             android:textSize="30sp"
             tools:layout_editor_absoluteX="65dp"
@@ -37,8 +43,11 @@
 
         <TextView
             android:id="@+id/countdown"
-            android:layout_width="248dp"
+            android:layout_width="264dp"
             android:layout_height="74dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="120dp"
             android:textColor="#FFF"
             android:textSize="30sp"
             tools:layout_editor_absoluteX="65dp"
@@ -49,29 +58,26 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="385dp"
             android:layout_height="41dp"
+            android:layout_below="@+id/rollButton"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-43dp"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="100dp" />
-
-    </LinearLayout>
-
-
-    <RelativeLayout
-        android:layout_width="220dp"
-        android:layout_height="219dp"
-        android:gravity="center"
-        android:padding="@dimen/activity_horizontal_margin"
-        tools:layout_editor_absoluteX="96dp"
-        tools:layout_editor_absoluteY="332dp">
 
         <Button
             android:id="@+id/rollButton"
 
-            android:layout_width="wrap_content"
+            android:layout_width="226dp"
             android:layout_height="wrap_content"
 
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="43dp"
             android:background="@color/colorPrimary"
             android:text="@string/button_text"
             android:textColor="@android:color/background_light"
+            app:layout_anchor="@+id/rollButton"
+            app:layout_anchorGravity="right|center"
             tools:layout_editor_absoluteX="65dp"
             tools:layout_editor_absoluteY="409dp" />
 
@@ -81,16 +87,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="38dp"
+            android:layout_alignEnd="@+id/progressBar"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="13dp"
             android:background="@color/colorPrimary"
             android:text="@string/btn_sign_out"
-            android:textColor="@android:color/background_light"
-            tools:layout_editor_absoluteX="280dp"
-            tools:layout_editor_absoluteY="16dp" />
-
+            android:textColor="@android:color/background_light" />
 
     </RelativeLayout>
 
-</android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>

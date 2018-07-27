@@ -13,8 +13,11 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Random;
 
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     int playerGold = 0;
     int playerLevel = 1;
-    int playerExperience = 0;
+    int playerExperience;
     int playerLife = 100;
     int playerDefence = 5;
     int playerAttack = 5;
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
     private DatabaseReference database;
     private FirebaseAuth.AuthStateListener authListener;
+
+    private ValueEventListener postListener;
 
     boolean playerTurn = true;
 
@@ -88,6 +93,25 @@ public class MainActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance().getReference();
 
+        database.child("users").child(auth.getCurrentUser().getUid()).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get Post object and use the values to update the UI
+                        User user = dataSnapshot.getValue(User.class);
+                        playerExperience = user.getExperience();
+                        Log.d("app", "xp" + user.getExperience());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // Getting Post failed, log a message
+                        Log.w("app", "loadPost:onCancelled", databaseError.toException());
+                        // ...
+                    }
+                }
+        );
+
         experience = (TextView) findViewById(R.id.points);
         level = (TextView) findViewById(R.id.level);
         progress = (ProgressBar) findViewById(R.id.progressBar);
@@ -95,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
         level.setText("Level: " + playerLevel);
         experience.setText("Experience: " + playerExperience);
 
-        newUser(1L, "Kurmo", "Sapakas");
 
         myButton = (Button) findViewById(R.id.rollButton);
 
@@ -110,19 +133,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void signOut() {
-        FirebaseUser User = FirebaseAuth.getInstance().getCurrentUser();
-        User = null;
         auth.signOut();
+        startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
 
     private void getUser() {
 
     }
-    private void newUser(Long userId, String name, String password) {
-        User user = new User(userId, name, password);
-        
-        database.child("users").child(name).setValue(user);
-    }
+
 
     public void fight() {
         int number = randomNumberGenerator.nextInt(46);

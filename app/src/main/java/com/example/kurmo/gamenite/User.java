@@ -1,17 +1,21 @@
 package com.example.kurmo.gamenite;
 
 public class User {
-    public long userId;
-    public String username;
-    public String password;
+    public String userId;
+    public int level;
+    public int experience;
 
     public User() {
 
     }
 
-    public User(Long userId, String username, String password) {
+    public User(String userId) {
         this.userId = userId;
-        this.username = username;
-        this.password = password;
+        this.experience = 0;
+        this.level = 0;
+    }
+
+    public int getExperience() {
+        return experience;
     }
 }
