@@ -23,7 +23,7 @@
             android:layout_alignStart="@+id/progressBar"
             android:layout_alignTop="@+id/sign_out"
             android:textColor="#FFF"
-            android:textSize="30sp"
+            android:textSize="30dp"
             app:layout_anchor="@+id/rollButton"
             app:layout_anchorGravity="top|center"
             tools:layout_editor_absoluteX="65dp"
@@ -36,7 +36,7 @@
             android:layout_alignStart="@+id/points"
             android:layout_below="@+id/points"
             android:textColor="#FFF"
-            android:textSize="30sp"
+            android:textSize="30dp"
             tools:layout_editor_absoluteX="65dp"
             tools:layout_editor_absoluteY="329dp" />
 
@@ -49,7 +49,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="120dp"
             android:textColor="#FFF"
-            android:textSize="30sp"
+            android:textSize="30dp"
             tools:layout_editor_absoluteX="65dp"
             tools:layout_editor_absoluteY="168dp" />
 

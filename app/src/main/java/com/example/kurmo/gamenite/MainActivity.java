@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
 
-
+    private User localUser;
     private TextView experience;
     private TextView level;
     private ProgressBar progress;
@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
             auth.getCurrentUser().getUid();
         }
 
+        localUser = new User(user.getUid());
+
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        experience = (TextView) findViewById(R.id.points);
         database = FirebaseDatabase.getInstance().getReference();
 
         database.child("users").child(auth.getCurrentUser().getUid()).addValueEventListener(
@@ -99,8 +101,14 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get Post object and use the values to update the UI
                         User user = dataSnapshot.getValue(User.class);
-                        playerExperience = user.getExperience();
-                        Log.d("app", "xp" + user.getExperience());
+//                        localUser.setUserID(auth.getCurrentUser().getUid());
+                        localUser.setexperience(user.getexperience());
+                        localUser.setlevel(user.getlevel());
+
+                        Log.d("app", "xp: " + localUser.getexperience());
+
+                        experience.setText("Experience: " + localUser.getexperience());
+                        level.setText("Level: " + localUser.getlevel());
                     }
 
                     @Override
@@ -111,17 +119,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        experience = (TextView) findViewById(R.id.points);
         level = (TextView) findViewById(R.id.level);
         progress = (ProgressBar) findViewById(R.id.progressBar);
 
-        level.setText("Level: " + playerLevel);
-        experience.setText("Experience: " + playerExperience);
-
-
         myButton = (Button) findViewById(R.id.rollButton);
-
 
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,11 +138,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
 
-    private void getUser() {
-
-    }
-
-
     public void fight() {
         int number = randomNumberGenerator.nextInt(46);
         final long countdownLong = number*1000L;
@@ -155,38 +151,39 @@ public class MainActivity extends AppCompatActivity {
             public void onFinish() {
                 countdown.setText("");
                 calculateWinner();
-                update();
+//                update();
                 myButton.setEnabled(true);
             }
         }.start();
     }
 
-    public void update() {
-        level.setText("Level: " + playerLevel);
-        experience.setText("Experience: " + playerExperience);
-        progressXP = (100*playerExperience)/1000;
-        progress.setProgress(progressXP);
-    }
+//    public void update() {
+//        level.setText("Level: " + playerLevel);
+//        experience.setText("Experience: " + playerExperience);
+//        progressXP = (100*playerExperience)/1000;
+//        progress.setProgress(progressXP);
+//    }
 
     public void addExperience(boolean winner, int experience) {
         if (winner) {
-            playerExperience += experience;
+            localUser.addexperience(experience);
+
         } else {
-            playerExperience += experience/2;
+            localUser.addexperience(experience/2);
         }
         calculateLevel();
     }
 
     public void calculateLevel() {
-        if (playerExperience > 1000) {
-            addLevel();
-            playerExperience -= 1000;
+        if (localUser.getexperience() > 1000) {
+            localUser.addlevel();
+            localUser.addexperience(-1000);
         }
     }
 
-    public void addLevel() {
-        playerLevel++;
-    }
+//    public void addLevel() {
+//        playerLevel++;
+//    }
 
     public void calculateWinner() {
         boolean winner = false;
