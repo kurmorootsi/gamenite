@@ -27,7 +27,8 @@
             app:layout_anchor="@+id/rollButton"
             app:layout_anchorGravity="top|center"
             tools:layout_editor_absoluteX="65dp"
-            tools:layout_editor_absoluteY="255dp" />
+            tools:layout_editor_absoluteY="255dp"
+            android:layout_alignLeft="@+id/progressBar" />
 
         <TextView
             android:id="@+id/level"
@@ -38,7 +39,8 @@
             android:textColor="#FFF"
             android:textSize="30dp"
             tools:layout_editor_absoluteX="65dp"
-            tools:layout_editor_absoluteY="329dp" />
+            tools:layout_editor_absoluteY="329dp"
+            android:layout_alignLeft="@+id/points" />
 
 
         <TextView
@@ -79,7 +81,8 @@
             app:layout_anchor="@+id/rollButton"
             app:layout_anchorGravity="right|center"
             tools:layout_editor_absoluteX="65dp"
-            tools:layout_editor_absoluteY="409dp" />
+            tools:layout_editor_absoluteY="409dp"
+            tools:ignore="NotSibling" />
 
         <Button
             android:id="@+id/sign_out"
@@ -92,7 +95,19 @@
             android:layout_marginTop="13dp"
             android:background="@color/colorPrimary"
             android:text="@string/btn_sign_out"
-            android:textColor="@android:color/background_light" />
+            android:textColor="@android:color/background_light"
+            android:layout_alignRight="@+id/progressBar" />
+
+        <SeekBar
+            android:id="@+id/seekBar2"
+            android:layout_width="356dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:max="2"
+            android:progress="1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="246dp" />
+
 
     </RelativeLayout>
 

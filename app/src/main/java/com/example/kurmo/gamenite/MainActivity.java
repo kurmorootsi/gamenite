@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
     int playerLevel = 1;
     int playerExperience;
     int playerLife = 100;
-    int playerDefence = 5;
-    int playerAttack = 5;
+    int playerDefence = 1;
+    int playerAttack = 1;
     int progressXP = 0;
 
     private FirebaseAuth auth;
@@ -44,15 +45,16 @@ public class MainActivity extends AppCompatActivity {
 
     private DatabaseReference database;
     private FirebaseAuth.AuthStateListener authListener;
+    SeekBar.OnSeekBarChangeListener customSeekBarListener;
 
     private ValueEventListener postListener;
 
     boolean playerTurn = true;
 
-    int opponentLevel = 3;
+    int opponentLevel = 0;
     int opponentLife = 100;
-    int opponentDefence = 8;
-    int opponentAttack = 7;
+    int opponentDefence = 0;
+    int opponentAttack = 0;
 
 
     Random randomNumberGenerator = new Random();
@@ -102,8 +104,12 @@ public class MainActivity extends AppCompatActivity {
                         // Get Post object and use the values to update the UI
                         User user = dataSnapshot.getValue(User.class);
 //                        localUser.setUserID(auth.getCurrentUser().getUid());
-                        localUser.setexperience(user.getexperience());
-                        localUser.setlevel(user.getlevel());
+                        if (user != null) {
+                            localUser.setexperience(user.getexperience());
+                            localUser.setlevel(user.getlevel());
+                            localUser.setseekbar(user.getseekbar());
+                            localUser.setgold(user.getgold());
+                        }
 
                         Log.d("app", "xp: " + localUser.getexperience());
 
@@ -119,6 +125,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+        customSeekBarListener =
+                new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                        updateSeekbar(progress);
+                        Log.d("app", "seekbar: " + localUser.getseekbar());
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                };
         level = (TextView) findViewById(R.id.level);
         progress = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -137,55 +161,78 @@ public class MainActivity extends AppCompatActivity {
         auth.signOut();
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
-
+    public void updateSeekbar(int progress) {
+        localUser.setseekbar(progress);
+    }
     public void fight() {
         int number = randomNumberGenerator.nextInt(46);
         final long countdownLong = number*1000L;
+
+        final NPC npc = new NPC("Wolf");
+
+        database = FirebaseDatabase.getInstance().getReference();
+
+        database.child("npc").child("Wolf").addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        NPC npc_data = dataSnapshot.getValue(NPC.class);
+                        npc.setlevel(npc_data.getlevel());
+                        npc.setAttack(npc_data.getAttack());
+                        npc.setDefence(npc_data.getDefence());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w("app", "loadPost:onCancelled", databaseError.toException());
+                    }
+                }
+        );
 
         new CountDownTimer(countdownLong, 1000) {
             TextView countdown = (TextView) findViewById(R.id.countdown);
 
             public void onTick(long millisUntilFinished) {
-                countdown.setText(countdownLong + " Fighting... " + ((countdownLong - millisUntilFinished) / 1000));
+                countdown.setText(countdownLong/1000 + " Fighting... " + ((countdownLong - millisUntilFinished) / 1000));
             }
             public void onFinish() {
                 countdown.setText("");
-                calculateWinner();
-//                update();
+                calculateWinner(npc);
                 myButton.setEnabled(true);
             }
         }.start();
     }
 
-//    public void update() {
-//        level.setText("Level: " + playerLevel);
-//        experience.setText("Experience: " + playerExperience);
-//        progressXP = (100*playerExperience)/1000;
-//        progress.setProgress(progressXP);
-//    }
-
     public void addExperience(boolean winner, int experience) {
         if (winner) {
             localUser.addexperience(experience);
-
         } else {
             localUser.addexperience(experience/2);
         }
+        progressXP = (100*localUser.getexperience())/1000;
+        progress.setProgress(progressXP);
         calculateLevel();
     }
+    public void addGold(boolean winner, NPC npc) {
+        if (winner) {
+            localUser.addgold(npc.getgold());
 
+        } else {
+            localUser.addgold(npc.getgold()/2);
+        }
+    }
     public void calculateLevel() {
         if (localUser.getexperience() > 1000) {
             localUser.addlevel();
             localUser.addexperience(-1000);
         }
     }
-
-//    public void addLevel() {
-//        playerLevel++;
-//    }
-
-    public void calculateWinner() {
+    public void calculateWinner(NPC npc) {
+        playerLife = 100;
+        opponentLife = 100;
+        opponentAttack = npc.getAttack();
+        opponentDefence = npc.getDefence();
+        opponentLevel = npc.getlevel();
         boolean winner = false;
         while (playerLife > 0 && opponentLife > 0) {
             if(playerTurn) {
@@ -205,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         addExperience(winner, 150);
+        addGold(winner, npc);
     }
 
     public int calculateHit(int defence, int attack, int level) {
