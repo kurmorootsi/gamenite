@@ -6,8 +6,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+
 @IgnoreExtraProperties
-public class User {
+public class User{
     public boolean isLoaded;
     public String userId;
     public int level;
@@ -16,8 +18,6 @@ public class User {
     public int experience;
     private Long countdown;
     private Long number;
-    private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-
 
     public User() {
     }

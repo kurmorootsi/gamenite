@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 import static java.lang.Math.round;
 
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference database;
     private FirebaseAuth.AuthStateListener authListener;
     SeekBar.OnSeekBarChangeListener customSeekBarListener;
+    private final CountDownLatch loginLatch = new CountDownLatch (1);
+    private boolean callbackResults;
 
     private ValueEventListener postListener;
 
@@ -115,6 +118,34 @@ public class MainActivity extends AppCompatActivity {
         progress = (ProgressBar) findViewById(R.id.progressBar);
         myButton = (Button) findViewById(R.id.rollButton);
         Log.i("app", "tereee");
+
+        loadUserData();
+
+        customSeekBarListener =
+                new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                        updateSeekbar(progress);
+                        Log.d("app", "seekbar: " + localUser.getSeekbar());
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                };
+        Log.d("app", "userloaded: " + localUser.isLoaded);
+        if (localUser.isLoaded) {
+            userLoaded();
+            Log.d("app", "userloaded: " + localUser.isLoaded);
+        }
+    }
+    public void loadUserData(){
         database.child("users").child(auth.getCurrentUser().getUid()).addValueEventListener(
                 new ValueEventListener() {
                     @Override
@@ -145,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("app", "GG");
                             progressXP = (100*localUser.getExperience())/1000;
                             progress.setProgress(progressXP);
+                            return;
                         }
                     }
 
@@ -156,30 +188,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        customSeekBarListener =
-                new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                        updateSeekbar(progress);
-                        Log.d("app", "seekbar: " + localUser.getSeekbar());
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-
-                    }
-                };
-        Log.d("app", "userloaded: " + localUser.isLoaded);
-        if (localUser.isLoaded) {
-            userLoaded();
-            Log.d("app", "userloaded: " + localUser.isLoaded);
-        }
     }
     public void userLoaded() {
         Long currentTime = new Date().getTime();
