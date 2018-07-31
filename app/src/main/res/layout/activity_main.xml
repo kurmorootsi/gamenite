@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:fitsSystemWindows="true"
-    android:background="@drawable/newbackground">
+    android:background="@drawable/background">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -17,39 +17,66 @@
 
 
         <TextView
-            android:id="@+id/points"
-            android:layout_width="245dp"
-            android:layout_height="59dp"
-            android:layout_alignStart="@+id/progressBar"
-            android:layout_alignTop="@+id/sign_out"
+            android:id="@+id/gold"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/countdown"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="-97dp"
+            android:layout_marginStart="70dp"
             android:textColor="#FFF"
-            android:textSize="30dp"
-            app:layout_anchor="@+id/rollButton"
-            app:layout_anchorGravity="top|center"
-            tools:layout_editor_absoluteX="65dp"
-            tools:layout_editor_absoluteY="255dp"
-            android:layout_alignLeft="@+id/progressBar" />
+            android:textSize="22dp"
+            tools:layout_editor_absoluteX="100dp"
+            tools:layout_editor_absoluteY="100dp" />
+
+        <TextView
+            android:id="@+id/attack"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/countdown"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="-97dp"
+            android:layout_marginStart="150dp"
+            android:textColor="#FFF"
+            android:textSize="22dp"
+            android:text="36"
+            tools:layout_editor_absoluteX="100dp"
+            tools:layout_editor_absoluteY="100dp" />
+
+        <TextView
+            android:id="@+id/defence"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/countdown"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="-97dp"
+            android:layout_marginStart="230dp"
+            android:textColor="#FFF"
+            android:textSize="22dp"
+            tools:layout_editor_absoluteX="100dp"
+            tools:layout_editor_absoluteY="100dp" />
 
         <TextView
             android:id="@+id/level"
             android:layout_width="246dp"
-            android:layout_height="59dp"
-            android:layout_alignStart="@+id/points"
-            android:layout_below="@+id/points"
+            android:layout_height="74dp"
+
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="55dp"
             android:textColor="#FFF"
             android:textSize="30dp"
             tools:layout_editor_absoluteX="65dp"
-            tools:layout_editor_absoluteY="329dp"
-            android:layout_alignLeft="@+id/points" />
+            tools:layout_editor_absoluteY="329dp" />
 
 
         <TextView
             android:id="@+id/countdown"
             android:layout_width="264dp"
             android:layout_height="74dp"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="120dp"
+            android:layout_marginTop="92dp"
             android:textColor="#FFF"
             android:textSize="30dp"
             tools:layout_editor_absoluteX="65dp"
@@ -60,9 +87,9 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="385dp"
             android:layout_height="41dp"
-            android:layout_below="@+id/rollButton"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="-43dp"
+            android:layout_marginTop="161dp"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="100dp" />
 
@@ -72,41 +99,27 @@
             android:layout_width="226dp"
             android:layout_height="wrap_content"
 
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="43dp"
+            android:layout_marginTop="241dp"
             android:background="@color/colorPrimary"
             android:text="@string/button_text"
             android:textColor="@android:color/background_light"
-            app:layout_anchor="@+id/rollButton"
-            app:layout_anchorGravity="right|center"
             tools:layout_editor_absoluteX="65dp"
-            tools:layout_editor_absoluteY="409dp"
-            tools:ignore="NotSibling" />
+            tools:layout_editor_absoluteY="409dp" />
 
         <Button
             android:id="@+id/sign_out"
 
-            android:layout_width="wrap_content"
+            android:layout_width="78dp"
             android:layout_height="wrap_content"
 
             android:layout_alignEnd="@+id/progressBar"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="13dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="24dp"
             android:background="@color/colorPrimary"
             android:text="@string/btn_sign_out"
-            android:textColor="@android:color/background_light"
-            android:layout_alignRight="@+id/progressBar" />
-
-        <SeekBar
-            android:id="@+id/seekBar2"
-            android:layout_width="356dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:max="2"
-            android:progress="1"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="246dp" />
+            android:textColor="@android:color/background_light" />
 
 
     </RelativeLayout>

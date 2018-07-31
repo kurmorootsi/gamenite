@@ -18,8 +18,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import static java.lang.Math.round;
@@ -35,9 +39,17 @@ public class MainActivity extends AppCompatActivity {
     int playerAttack = 1;
     int progressXP = 0;
 
+    Long lastFight;
+
+    boolean isFighting = false;
+    private CountDownTimer countDownTimer;
+
     private FirebaseAuth auth;
 
     private User localUser;
+    private TextView attack;
+    private TextView defence;
+    private TextView gold;
     private TextView experience;
     private TextView level;
     private ProgressBar progress;
@@ -61,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -94,27 +107,45 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        experience = (TextView) findViewById(R.id.points);
+        gold = (TextView) findViewById(R.id.gold);
+        attack = (TextView) findViewById(R.id.attack);
+        defence = (TextView) findViewById(R.id.defence);
         database = FirebaseDatabase.getInstance().getReference();
-
+        level = (TextView) findViewById(R.id.level);
+        progress = (ProgressBar) findViewById(R.id.progressBar);
+        myButton = (Button) findViewById(R.id.rollButton);
+        Log.i("app", "tereee");
         database.child("users").child(auth.getCurrentUser().getUid()).addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get Post object and use the values to update the UI
+                        Log.i("app", "----------------- sss" + auth.getCurrentUser().getUid());
                         User user = dataSnapshot.getValue(User.class);
 //                        localUser.setUserID(auth.getCurrentUser().getUid());
+                        Log.i("app", "----------------- TERE");
                         if (user != null) {
-                            localUser.setexperience(user.getexperience());
-                            localUser.setlevel(user.getlevel());
-                            localUser.setseekbar(user.getseekbar());
-                            localUser.setgold(user.getgold());
+                            localUser.setExperience(user.getExperience());
+                            localUser.setLevel(user.getLevel());
+                            localUser.setSeekbar(user.getSeekbar());
+                            localUser.setGold(user.getGold());
+                            localUser.setCountdown(user.getCountdown());
+                            localUser.setNumber(user.getNumber());
+                            localUser.setLoaded(true);
+                            updateData();
+                            Log.d("app", "-----------------" + localUser.getExperience());
+                            Log.d("app", "-----------------" + localUser.getGold());
+                            Log.d("app", "----sss----" + localUser.getCountdown());
+                            Log.d("app", "xp: " + localUser.getExperience());
+
+                            attack.setText(Integer.toString(localUser.getExperience()));
+                            defence.setText(Integer.toString(localUser.getLevel()));
+                            gold.setText(Integer.toString(localUser.getGold()));
+
+                            Log.d("app", "GG");
+                            progressXP = (100*localUser.getExperience())/1000;
+                            progress.setProgress(progressXP);
                         }
-
-                        Log.d("app", "xp: " + localUser.getexperience());
-
-                        experience.setText("Experience: " + localUser.getexperience());
-                        level.setText("Level: " + localUser.getlevel());
                     }
 
                     @Override
@@ -125,12 +156,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
         customSeekBarListener =
                 new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                         updateSeekbar(progress);
-                        Log.d("app", "seekbar: " + localUser.getseekbar());
+                        Log.d("app", "seekbar: " + localUser.getSeekbar());
                     }
 
                     @Override
@@ -143,18 +175,65 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 };
-        level = (TextView) findViewById(R.id.level);
-        progress = (ProgressBar) findViewById(R.id.progressBar);
+        Log.d("app", "userloaded: " + localUser.isLoaded);
+        if (localUser.isLoaded) {
+            userLoaded();
+            Log.d("app", "userloaded: " + localUser.isLoaded);
+        }
+    }
+    public void userLoaded() {
+        Long currentTime = new Date().getTime();
+        Long number = localUser.getNumber();
 
-        myButton = (Button) findViewById(R.id.rollButton);
+        Log.d("app", "number" + number);
 
+        if (currentTime - localUser.getCountdown() <= number) isFighting = true;
+        else isFighting = false;
+        Long elapsedTime = currentTime - localUser.getCountdown();
+
+        Log.d("app", "elapsed time: " + (elapsedTime)/1000 + " isfighting: " + isFighting);
+        if (!isFighting) {
+            myButton.setEnabled(true);
+
+        } else  {
+            myButton.setEnabled(false);
+
+            countdown(number - elapsedTime, elapsedTime);
+        }
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 myButton.setEnabled(false);
-                fight();
+                Log.d("app", "tere");
+
+                isFighting = true;
+                Long date = new Date().getTime();
+                database.child("users").child(auth.getCurrentUser().getUid()).child("countdown").setValue(date);
+                int number = randomNumberGenerator.nextInt(2100);
+                final long countdownLong = number*1000L;
+                Log.d("app", "<<<<<<<<<<<<<<number>>>>>>>>>> " + number + " || " + countdownLong);
+                database.child("users").child(auth.getCurrentUser().getUid()).child("number").setValue(countdownLong);
+                countdown(countdownLong, 0L);
             }
         });
+    }
+
+    public void countdown(final Long countdownLong, final Long elapsedLong) {
+        countDownTimer = new CountDownTimer(countdownLong, 1000) {
+            TextView countdown = (TextView) findViewById(R.id.countdown);
+
+            public void onTick(long millisUntilFinished) {
+                Long timer = elapsedLong + countdownLong - millisUntilFinished;
+                countdown.setText("Fighting... " + (timer / 1000));
+            }
+            public void onFinish() {
+                isFighting = false;
+                myButton.setEnabled(true);
+                Log.d("app", "mybutton enabled: " + myButton.isEnabled() + " isfighting: " + isFighting);
+                countdown.setText("");
+                fight();
+            }
+        }.start();
     }
 
     public void signOut() {
@@ -162,11 +241,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
     public void updateSeekbar(int progress) {
-        localUser.setseekbar(progress);
+        localUser.setSeekbar(progress);
+    }
+    public void updateData() {
+        database.child("users").child(localUser.getUserId()).setValue(localUser);
     }
     public void fight() {
-        int number = randomNumberGenerator.nextInt(46);
-        final long countdownLong = number*1000L;
 
         final NPC npc = new NPC("Wolf");
 
@@ -188,43 +268,31 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        new CountDownTimer(countdownLong, 1000) {
-            TextView countdown = (TextView) findViewById(R.id.countdown);
-
-            public void onTick(long millisUntilFinished) {
-                countdown.setText(countdownLong/1000 + " Fighting... " + ((countdownLong - millisUntilFinished) / 1000));
-            }
-            public void onFinish() {
-                countdown.setText("");
-                calculateWinner(npc);
-                myButton.setEnabled(true);
-            }
-        }.start();
-    }
+        calculateWinner(npc);
+        }
 
     public void addExperience(boolean winner, int experience) {
         if (winner) {
-            localUser.addexperience(experience);
+            localUser.addExperience(experience);
         } else {
-            localUser.addexperience(experience/2);
+            localUser.addExperience(experience/2);
         }
-        progressXP = (100*localUser.getexperience())/1000;
+        progressXP = (100*localUser.getExperience())/1000;
         progress.setProgress(progressXP);
         calculateLevel();
     }
     public void addGold(boolean winner, NPC npc) {
         if (winner) {
-            localUser.addgold(npc.getgold());
+            localUser.addGold(npc.getgold());
 
         } else {
-            localUser.addgold(npc.getgold()/2);
+            localUser.addGold(npc.getgold()/2);
         }
     }
     public void calculateLevel() {
-        if (localUser.getexperience() > 1000) {
-            localUser.addlevel();
-            localUser.addexperience(-1000);
+        if (localUser.getExperience() > 1000) {
+            localUser.addLevel();
+            localUser.addExperience(-1000);
         }
     }
     public void calculateWinner(NPC npc) {
@@ -251,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
                 winner = false;
             }
         }
-        addExperience(winner, 150);
+        addExperience(winner, 750);
         addGold(winner, npc);
     }
 
