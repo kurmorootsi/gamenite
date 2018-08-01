@@ -9,6 +9,7 @@ public class NPC {
     private int attack;
     private int gold;
     private int defence;
+    private int xp;
     private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
 
@@ -22,7 +23,12 @@ public class NPC {
     }
     public void setlevel(int level) {this.level = level;}
     public int getlevel() {return level;}
-
+    public void setXp(int xp) {
+        this.xp = xp;
+    }
+    public int getXp() {
+        return xp;
+    }
     public int getattack() {
         return attack;
     }

@@ -121,6 +121,14 @@
             tools:layout_editor_absoluteX="65dp"
             tools:layout_editor_absoluteY="409dp" />
 
+        <Spinner
+            android:id="@+id/planets_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="299dp" />
+
         <Button
             android:id="@+id/sign_out"
 

@@ -17,7 +17,7 @@ public class User{
     private int gold;
     private int attack;
     private int defence;
-    private int experience;
+    public int experience;
     private Long countdown;
     private Long number;
 

@@ -1,5 +1,6 @@
 package com.example.kurmo.gamenite;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.CountDownTimer;
@@ -9,9 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.pusher.pushnotifications.PushNotifications;
@@ -65,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView level;
     private ProgressBar progress;
     private Button myButton, signOut;
+
+    private String opponent = "Monkey";
 
     private DatabaseReference database;
     private FirebaseAuth.AuthStateListener authListener;
@@ -121,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         gold = (TextView) findViewById(R.id.gold);
         attack = (TextView) findViewById(R.id.attack);
         defence = (TextView) findViewById(R.id.defence);
@@ -149,16 +156,16 @@ public class MainActivity extends AppCompatActivity {
                 };
         loadUserData();
     }
+
     public void loadUserData(){
         database.child("users").child(auth.getCurrentUser().getUid()).addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get Post object and use the values to update the UI
-                        Log.i("app", "----------------- sss" + auth.getCurrentUser().getUid());
+                        Log.i("app", "--------UID---------" + auth.getCurrentUser().getUid());
                         User user = dataSnapshot.getValue(User.class);
 //                        localUser.setUserID(auth.getCurrentUser().getUid());
-                        Log.i("app", "----------------- TERE");
                         if (user != null) {
                             localUser.setExperience(user.getExperience());
                             localUser.setLevel(user.getLevel());
@@ -169,22 +176,19 @@ public class MainActivity extends AppCompatActivity {
                             localUser.setAttack(user.getAttack());
                             localUser.setDefence(user.getDefence());
                             updateData();
-                            Log.d("app", "-----------------" + localUser.getExperience());
-                            Log.d("app", "-----------------" + localUser.getGold());
-                            Log.d("app", "----sss----" + localUser.getCountdown());
-                            Log.d("app", "xp: " + localUser.getExperience());
-                            Log.d("app", "level: " + localUser.getLevel());
-                            Log.d("app", "---------number-------: " + localUser.getNumber());
+                            Log.d("app", "--------EXPERIENCE---------" + localUser.getExperience());
+                            Log.d("app", "--------GOLD---------" + localUser.getGold());
+                            Log.d("app", "----COUNTDOWN----" + localUser.getCountdown());
+                            Log.d("app", "--------LEVEL---------" + localUser.getLevel());
+                            Log.d("app", "--------NUMBER---------: " + localUser.getNumber());
 
                             attack.setText(Integer.toString(localUser.getExperience()));
                             defence.setText(Integer.toString(localUser.getLevel()));
                             gold.setText(Integer.toString(localUser.getGold()));
 
-                            Log.d("app", "GG");
                             progressXP = (100*localUser.getExperience())/1000;
                             progress.setProgress(progressXP);
                             if (firstTimeLoad) {
-                                Log.d("app", "FIRST TIME LOAD: " + firstTimeLoad);
                                 userLoaded();
                             }
                         }
@@ -213,7 +217,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d("app", "number " + number);
 
         if (localUser.getCountdown() != null) {
+            if (currentTime - localUser.getCountdown() >= number) {
+                countdown(1000L,0L);
+            }
             isFighting = currentTime - localUser.getCountdown() <= number;
+            Log.d("app", "is this: " + (currentTime - localUser.getCountdown()) + " smaller than this: " + number);
         } else isFighting = false;
 
         Long elapsedTime = currentTime - localUser.getCountdown();
@@ -221,23 +229,19 @@ public class MainActivity extends AppCompatActivity {
         Log.d("app", "elapsed time: " + (elapsedTime)/1000 + " isfighting: " + isFighting);
         if (!isFighting) {
             myButton.setEnabled(true);
-
         } else  {
             myButton.setEnabled(false);
-
             countdown(number - elapsedTime, elapsedTime);
         }
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 myButton.setEnabled(false);
-                Log.d("app", "tere");
-
                 isFighting = true;
                 Long date = new Date().getTime();
                 int number = randomNumberGenerator.nextInt(2100);
                 final long countdownLong = number*1000L;
-                Log.d("app", "<<<<<<<<<<<<<<number>>>>>>>>>> " + number + " || " + countdownLong);
+                Log.d("app", "<<<<<<<<<<<<<<NUMBER>>>>>>>>>> " + number + " || " + countdownLong);
                 localUser.setCountdown(date);
                 localUser.setNumber(countdownLong);
                 updateData();
@@ -277,11 +281,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void fight() {
 
-        final NPC npc = new NPC("Wolf");
+        final NPC npc = new NPC(opponent);
 
         database = FirebaseDatabase.getInstance().getReference();
 
-        database.child("npc").child("Wolf").addValueEventListener(
+        database.child("npc").child(opponent).addValueEventListener(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -289,7 +293,9 @@ public class MainActivity extends AppCompatActivity {
                         npc.setlevel(npc_data.getlevel());
                         npc.setattack(npc_data.getattack());
                         npc.setdefence(npc_data.getdefence());
-                        Log.d("app", "NPC ATTACK: " + npc.getattack());
+                        npc.setXp(npc_data.getXp());
+                        npc.setgold(npc_data.getgold());
+                        Log.d("app", "NPC GOLD: " + npc_data.getgold());
                         calculateWinner(npc);
                     }
 
@@ -302,24 +308,17 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-    public void addExperience(boolean winner, int experience) {
+    public void addExperience(boolean winner, int experience, int goldAmount) {
         if (winner) {
             localUser.addExperience(experience);
+            localUser.addGold(goldAmount);
         } else {
             localUser.addExperience(experience/2);
+            localUser.addGold(goldAmount/2);
         }
         Log.d("app", "YOU WON: " + winner);
-        progressXP = (100*localUser.getExperience())/1000;
-        progress.setProgress(progressXP);
-        calculateLevel();
-    }
-    public void addGold(boolean winner, NPC npc) {
-        if (winner) {
-            localUser.addGold(npc.getgold());
 
-        } else {
-            localUser.addGold(npc.getgold()/2);
-        }
+        calculateLevel();
     }
     public void calculateLevel() {
         localLevel = new Level();
@@ -340,6 +339,8 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("app", "TEST: " + localUser.getExperience() + "|" + localLevel.getXp());
                                 localUser.addLevel();
                             }
+                            progressXP = (100*localUser.getExperience())/localLevel.getXp();
+                            progress.setProgress(progressXP);
                             updateData();
                         }
                     }
@@ -357,7 +358,10 @@ public class MainActivity extends AppCompatActivity {
     public void calculateWinner(NPC npc) {
         playerLife = 100;
         opponentLife = 100;
+        int rewardXP = npc.getXp();
+        int goldAmount = npc.getgold();
         opponentAttack = npc.getattack();
+        Log.d("app", "GOLD: " + npc.getgold() + " || " + npc.getXp() + " || " + npc.getattack());
         opponentDefence = npc.getdefence();
         opponentLevel = npc.getlevel();
         playerAttack = localUser.getAttack();
@@ -383,8 +387,7 @@ public class MainActivity extends AppCompatActivity {
                 winner = false;
             }
         }
-        addExperience(winner, 30);
-        addGold(winner, npc);
+        addExperience(winner, rewardXP, goldAmount);
     }
 
     public int calculateHit(int defence, int attack, int level) {
