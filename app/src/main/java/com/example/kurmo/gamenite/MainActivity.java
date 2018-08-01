@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private User localUser;
     private Level localLevel;
 
-
+    private TextView winner_text;
     private TextView attack;
     private TextView defence;
     private TextView gold;
@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
         gold = (TextView) findViewById(R.id.gold);
         attack = (TextView) findViewById(R.id.attack);
+        winner_text = (TextView) findViewById(R.id.winner);
         defence = (TextView) findViewById(R.id.defence);
         database = FirebaseDatabase.getInstance().getReference();
         level = (TextView) findViewById(R.id.level);
@@ -318,6 +319,10 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.d("app", "YOU WON: " + winner);
 
+        if (winner) {
+            winner_text.setText("You WON Your last fight!");
+        } else winner_text.setText("oh man! You lost Your last fight!");
+
         calculateLevel();
     }
     public void calculateLevel() {
@@ -341,6 +346,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                             progressXP = (100*localUser.getExperience())/localLevel.getXp();
                             progress.setProgress(progressXP);
+
+
+
                             updateData();
                         }
                     }
