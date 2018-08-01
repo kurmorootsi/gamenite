@@ -12,19 +12,23 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.pusher.pushnotifications.PushNotifications;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
 import static java.lang.Math.round;
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     Long lastFight;
 
     boolean isFighting = false;
+    boolean firstTimeLoad = false;
     private CountDownTimer countDownTimer;
 
     private FirebaseAuth auth;
@@ -79,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        firstTimeLoad = true;
 
         auth = FirebaseAuth.getInstance();
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -101,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
+        PushNotifications.start(getApplicationContext(), "2379b56b-67f4-449f-8993-f22342ead767");
         signOut = (Button) findViewById(R.id.sign_out);
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,9 +124,6 @@ public class MainActivity extends AppCompatActivity {
         progress = (ProgressBar) findViewById(R.id.progressBar);
         myButton = (Button) findViewById(R.id.rollButton);
         Log.i("app", "tereee");
-
-        loadUserData();
-
         customSeekBarListener =
                 new SeekBar.OnSeekBarChangeListener() {
                     @Override
@@ -139,11 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 };
-        Log.d("app", "userloaded: " + localUser.isLoaded);
-        if (localUser.isLoaded) {
-            userLoaded();
-            Log.d("app", "userloaded: " + localUser.isLoaded);
-        }
+        loadUserData();
     }
     public void loadUserData(){
         database.child("users").child(auth.getCurrentUser().getUid()).addValueEventListener(
@@ -162,12 +161,15 @@ public class MainActivity extends AppCompatActivity {
                             localUser.setGold(user.getGold());
                             localUser.setCountdown(user.getCountdown());
                             localUser.setNumber(user.getNumber());
-                            localUser.setLoaded(true);
+                            localUser.setAttack(user.getAttack());
+                            localUser.setDefence(user.getDefence());
                             updateData();
+                            Log.d("app", "userloaded before: " + localUser.isLoaded);
                             Log.d("app", "-----------------" + localUser.getExperience());
                             Log.d("app", "-----------------" + localUser.getGold());
                             Log.d("app", "----sss----" + localUser.getCountdown());
                             Log.d("app", "xp: " + localUser.getExperience());
+                            Log.d("app", "---------number-------: " + localUser.getNumber());
 
                             attack.setText(Integer.toString(localUser.getExperience()));
                             defence.setText(Integer.toString(localUser.getLevel()));
@@ -176,7 +178,10 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("app", "GG");
                             progressXP = (100*localUser.getExperience())/1000;
                             progress.setProgress(progressXP);
-                            return;
+                            if (firstTimeLoad) {
+                                Log.d("app", "FIRST TIME LOAD: " + firstTimeLoad);
+                                userLoaded();
+                            }
                         }
                     }
 
@@ -190,10 +195,12 @@ public class MainActivity extends AppCompatActivity {
         );
     }
     public void userLoaded() {
+        firstTimeLoad = false;
+        Log.d("app", "userloaded after: " + localUser.isLoaded);
         Long currentTime = new Date().getTime();
         Long number = localUser.getNumber();
 
-        Log.d("app", "number" + number);
+        Log.d("app", "number " + number);
 
         if (currentTime - localUser.getCountdown() <= number) isFighting = true;
         else isFighting = false;
@@ -216,11 +223,12 @@ public class MainActivity extends AppCompatActivity {
 
                 isFighting = true;
                 Long date = new Date().getTime();
-                database.child("users").child(auth.getCurrentUser().getUid()).child("countdown").setValue(date);
                 int number = randomNumberGenerator.nextInt(2100);
                 final long countdownLong = number*1000L;
                 Log.d("app", "<<<<<<<<<<<<<<number>>>>>>>>>> " + number + " || " + countdownLong);
-                database.child("users").child(auth.getCurrentUser().getUid()).child("number").setValue(countdownLong);
+                localUser.setCountdown(date);
+                localUser.setNumber(countdownLong);
+                updateData();
                 countdown(countdownLong, 0L);
             }
         });
@@ -254,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
     public void updateData() {
         database.child("users").child(localUser.getUserId()).setValue(localUser);
     }
+
     public void fight() {
 
         final NPC npc = new NPC("Wolf");
@@ -266,8 +275,10 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         NPC npc_data = dataSnapshot.getValue(NPC.class);
                         npc.setlevel(npc_data.getlevel());
-                        npc.setAttack(npc_data.getAttack());
-                        npc.setDefence(npc_data.getDefence());
+                        npc.setattack(npc_data.getattack());
+                        npc.setdefence(npc_data.getdefence());
+                        Log.d("app", "NPC ATTACK: " + npc.getattack());
+                        calculateWinner(npc);
                     }
 
                     @Override
@@ -276,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-        calculateWinner(npc);
+
         }
 
     public void addExperience(boolean winner, int experience) {
@@ -306,13 +317,17 @@ public class MainActivity extends AppCompatActivity {
     public void calculateWinner(NPC npc) {
         playerLife = 100;
         opponentLife = 100;
-        opponentAttack = npc.getAttack();
-        opponentDefence = npc.getDefence();
+        opponentAttack = npc.getattack();
+        opponentDefence = npc.getdefence();
         opponentLevel = npc.getlevel();
+        playerAttack = localUser.getAttack();
+        playerDefence = localUser.getDefence();
+        playerLevel = localUser.getLevel();
         boolean winner = false;
         while (playerLife > 0 && opponentLife > 0) {
             if(playerTurn) {
                 int dealtDamage = calculateHit(playerDefence, playerAttack, playerLevel);
+                Log.d("app", "PLAYER stats: " + playerDefence + " || " + playerAttack + " || " + playerLevel);
                 opponentLife = removeLife(opponentLife, dealtDamage);
                 Log.d("app", "player damage: " + dealtDamage);
                 Log.d("app", "NPC lifepoints: " + opponentLife);
@@ -320,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
                 winner = true;
             } else {
                 int dealtDamage = calculateHit(opponentDefence, opponentAttack, opponentLevel);
+                Log.d("app", "NPC stats: " + opponentDefence + " || " + opponentAttack + " || " + opponentLevel);
                 playerLife = removeLife(playerLife, dealtDamage);
                 Log.d("app", "NPC damage: " + dealtDamage);
                 Log.d("app", "player lifepoints: " + playerLife);

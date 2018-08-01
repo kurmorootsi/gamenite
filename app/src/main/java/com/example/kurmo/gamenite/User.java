@@ -15,6 +15,8 @@ public class User{
     public int level;
     public int seekbar;
     public int gold;
+    public int attack;
+    public int defence;
     public int experience;
     private Long countdown;
     private Long number;
@@ -65,4 +67,12 @@ public class User{
         return this.seekbar;
     }
     public void addLevel() {this.level++;}
+    public void setAttack(int attack) {
+        this.attack = attack;
+    }
+    public void setDefence(int defence) {
+        this.defence = defence;
+    }
+    public int getAttack() {return attack;}
+    public int getDefence() {return defence;}
 }

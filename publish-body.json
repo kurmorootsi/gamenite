@@ -1,0 +1,11 @@
+{
+  "interests": [
+    "hello"
+  ],
+  "fcm": {
+    "notification": {
+      "title": "Hello",
+      "body": "Hello, world!"
+    }
+  }
+}

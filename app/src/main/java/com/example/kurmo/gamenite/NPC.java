@@ -23,7 +23,7 @@ public class NPC {
     public void setlevel(int level) {this.level = level;}
     public int getlevel() {return level;}
 
-    public int getAttack() {
+    public int getattack() {
         return attack;
     }
     public int getgold() {
@@ -32,9 +32,9 @@ public class NPC {
     public void setgold(int gold) {
         this.gold = gold;
     }
-    public int getDefence() {
+    public int getdefence() {
         return defence;
     }
-    public void setAttack(int attack) {}
-    public void setDefence(int defence) {}
+    public void setattack(int attack) {this.attack = attack;}
+    public void setdefence(int defence) {this.defence = defence;}
 }
