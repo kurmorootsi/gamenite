@@ -21,48 +21,48 @@
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_above="@+id/countdown"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginBottom="-110dp"
-            android:layout_marginStart="90dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="90dp" />
-            <!--android:text="31"-->
-            android:textColor="#FFF"
-            android:textSize="22dp"
-            tools:layout_editor_absoluteX="100dp"
-            tools:layout_editor_absoluteY="100dp" />
+            android:layout_marginLeft="90dp"
+            android:layout_marginStart="90dp" />
+        <!--android:text="31"-->
+        android:textColor="#FFF"
+        android:textSize="22dp"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="100dp" />
 
         <TextView
             android:id="@+id/attack"
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_above="@+id/countdown"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginBottom="-110dp"
-            android:layout_marginStart="175dp"
             android:layout_marginLeft="175dp"
-            android:layout_alignParentLeft="true" />
-            <!--android:text="36"-->
-            android:textColor="#FFF"
-            android:textSize="22dp"
-            tools:layout_editor_absoluteX="100dp"
-            tools:layout_editor_absoluteY="100dp" />
+            android:layout_marginStart="175dp" />
+        <!--android:text="36"-->
+        android:textColor="#FFF"
+        android:textSize="22dp"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="100dp" />
 
         <TextView
             android:id="@+id/defence"
             android:layout_width="50dp"
             android:layout_height="40dp"
             android:layout_above="@+id/countdown"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginBottom="-110dp"
-            android:layout_marginStart="265dp"
             android:layout_marginLeft="265dp"
-            android:layout_alignParentLeft="true" />
-            <!--android:text="33"-->
-            android:textColor="#FFF"
-            android:textSize="22dp"
-            tools:layout_editor_absoluteX="100dp"
-            tools:layout_editor_absoluteY="100dp" />
+            android:layout_marginStart="265dp" />
+        <!--android:text="33"-->
+        android:textColor="#FFF"
+        android:textSize="22dp"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="100dp" />
 
         <TextView
             android:id="@+id/level"
@@ -83,16 +83,16 @@
             android:layout_width="264dp"
             android:layout_height="74dp"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="0dp"
-            android:layout_marginTop="113dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="0dp" />
-            <!--android:text="0h:4m:22s"-->
-            android:textColor="#FFF"
-            android:textSize="30dp"
-            tools:layout_editor_absoluteX="75dp"
-            tools:layout_editor_absoluteY="150dp" />
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="113dp" />
+        <!--android:text="0h:4m:22s"-->
+        android:textColor="#FFF"
+        android:textSize="30dp"
+        tools:layout_editor_absoluteX="75dp"
+        tools:layout_editor_absoluteY="150dp" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -129,11 +129,11 @@
 
             android:layout_alignEnd="@+id/progressBar"
             android:layout_alignParentBottom="true"
+            android:layout_alignRight="@+id/progressBar"
             android:layout_marginBottom="24dp"
             android:background="@color/colorPrimary"
             android:text="@string/btn_sign_out"
-            android:textColor="@android:color/background_light"
-            android:layout_alignRight="@+id/progressBar" />
+            android:textColor="@android:color/background_light" />
 
 
     </RelativeLayout>

@@ -4,11 +4,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class NPC {
-    public String name;
-    public int level;
-    public int attack;
-    public int gold;
-    public int defence;
+    private String name;
+    private int level;
+    private int attack;
+    private int gold;
+    private int defence;
     private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
 
 

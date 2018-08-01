@@ -1,7 +1,9 @@
 package com.example.kurmo.gamenite;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -53,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth auth;
 
     private User localUser;
+    private Level localLevel;
+
+
     private TextView attack;
     private TextView defence;
     private TextView gold;
@@ -164,11 +169,11 @@ public class MainActivity extends AppCompatActivity {
                             localUser.setAttack(user.getAttack());
                             localUser.setDefence(user.getDefence());
                             updateData();
-                            Log.d("app", "userloaded before: " + localUser.isLoaded);
                             Log.d("app", "-----------------" + localUser.getExperience());
                             Log.d("app", "-----------------" + localUser.getGold());
                             Log.d("app", "----sss----" + localUser.getCountdown());
                             Log.d("app", "xp: " + localUser.getExperience());
+                            Log.d("app", "level: " + localUser.getLevel());
                             Log.d("app", "---------number-------: " + localUser.getNumber());
 
                             attack.setText(Integer.toString(localUser.getExperience()));
@@ -195,15 +200,22 @@ public class MainActivity extends AppCompatActivity {
         );
     }
     public void userLoaded() {
+        if (localUser.getCountdown() == null) {
+            localUser.setCountdown(1L);
+        }
+        if (localUser.getNumber() == null) {
+            localUser.setNumber(1L);
+        }
         firstTimeLoad = false;
-        Log.d("app", "userloaded after: " + localUser.isLoaded);
         Long currentTime = new Date().getTime();
         Long number = localUser.getNumber();
 
         Log.d("app", "number " + number);
 
-        if (currentTime - localUser.getCountdown() <= number) isFighting = true;
-        else isFighting = false;
+        if (localUser.getCountdown() != null) {
+            isFighting = currentTime - localUser.getCountdown() <= number;
+        } else isFighting = false;
+
         Long elapsedTime = currentTime - localUser.getCountdown();
 
         Log.d("app", "elapsed time: " + (elapsedTime)/1000 + " isfighting: " + isFighting);
@@ -296,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             localUser.addExperience(experience/2);
         }
+        Log.d("app", "YOU WON: " + winner);
         progressXP = (100*localUser.getExperience())/1000;
         progress.setProgress(progressXP);
         calculateLevel();
@@ -309,10 +322,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void calculateLevel() {
-        if (localUser.getExperience() > 1000) {
-            localUser.addLevel();
-            localUser.addExperience(-1000);
-        }
+        localLevel = new Level();
+        Log.d("app", "ADDING LEVEL: " + Integer.toString(localUser.getLevel()));
+        database.child("levels").child(Integer.toString(localUser.getLevel()+1)).addValueEventListener(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get Post object and use the values to update the UI
+                        Level level = dataSnapshot.getValue(Level.class);
+                        Log.d("app", "ALMOST THERE: " + level);
+                        if (level != null) {
+                            localLevel.setLevel(level.getLevel());
+                            localLevel.setXp(level.getXp());
+                            Log.d("app", "LOCAL LEVEL: " + localLevel.getLevel());
+                            Log.d("app", "LOCAL XP: " + localLevel.getXp());
+                            if (localUser.getExperience() >= localLevel.getXp()) {
+                                Log.d("app", "TEST: " + localUser.getExperience() + "|" + localLevel.getXp());
+                                localUser.addLevel();
+                            }
+                            updateData();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // Getting Post failed, log a message
+                        Log.w("app", "loadPost:onCancelled", databaseError.toException());
+                        // ...
+                    }
+                }
+        );
+
     }
     public void calculateWinner(NPC npc) {
         playerLife = 100;
@@ -343,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
                 winner = false;
             }
         }
-        addExperience(winner, 750);
+        addExperience(winner, 30);
         addGold(winner, npc);
     }
 

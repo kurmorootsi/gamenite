@@ -109,9 +109,24 @@ public class SignupActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
     }
     private void newUser(String userId) {
+
+//        double dif = 83.0;
+//        double n = 1.1;
+//        int xp = 0;
+//        Level level = new Level(1, 0);
+//        database.child("levels").child(Integer.toString(level.getLevel())).setValue(level);
+//        for (int i=2; i<100; i++) {
+//            xp = (int) Math.round(xp+dif);
+//
+//            Level level1 = new Level(i, xp);
+//            database.child("levels").child(Integer.toString(level1.getLevel())).setValue(level1);
+//
+//            dif = Math.round(dif * n);
+//        }
+
         User user = new User(userId);
-        NPC npc = new NPC("Monkey");
-        database.child("npc").child(npc.getName()).setValue(npc);
+//        NPC npc = new NPC("Monkey");
+//        database.child("npc").child(npc.getName()).setValue(npc);
         database.child("users").child(userId).setValue(user);
     }
 }

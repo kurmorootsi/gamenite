@@ -10,14 +10,14 @@ import java.util.concurrent.CountDownLatch;
 
 @IgnoreExtraProperties
 public class User{
-    public boolean isLoaded;
-    public String userId;
-    public int level;
-    public int seekbar;
-    public int gold;
-    public int attack;
-    public int defence;
-    public int experience;
+    private boolean isLoaded;
+    private String userId;
+    private int level;
+    private int seekbar;
+    private int gold;
+    private int attack;
+    private int defence;
+    private int experience;
     private Long countdown;
     private Long number;
 
