@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Gamenite</string>
     <string name="button_text">Fight</string>
+    <string name="store">Store</string>
+
 
     <!-- Strings related to login -->
     <string name="action_sign_in_short">Register</string>
@@ -14,6 +16,7 @@
     <string name="new_pass">New Password</string>
     <string name="title_activity_profile">Firebase</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_store">Store</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="hint_name">Fullname</string>

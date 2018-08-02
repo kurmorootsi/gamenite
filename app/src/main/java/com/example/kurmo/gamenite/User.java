@@ -12,6 +12,7 @@ import java.util.concurrent.CountDownLatch;
 public class User{
     private boolean isLoaded;
     private String userId;
+    private boolean isFighting;
     private int level;
     private int seekbar;
     private int gold;
@@ -27,7 +28,10 @@ public class User{
     public void setLoaded(boolean isLoaded) {
         this.isLoaded = isLoaded;
     }
-
+    public void setFighting(boolean isFighting) {
+        this.isFighting = isFighting;
+    }
+    public boolean getFighting() {return isFighting;}
     public void setCountdown(Long countdown) {this.countdown = countdown;}
 
     public Long getCountdown() {return countdown;}
@@ -75,4 +79,10 @@ public class User{
     }
     public int getAttack() {return attack;}
     public int getDefence() {return defence;}
+    public void addAttack(int attack) {
+        this.attack += attack;
+    }
+    public void addDefence(int defence) {
+        this.defence += defence;
+    }
 }

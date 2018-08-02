@@ -122,7 +122,8 @@ public class SignupActivity extends AppCompatActivity {
 //            database.child("levels").child(Integer.toString(level1.getLevel())).setValue(level1);
 //
 //            dif = Math.round(dif * n);
-//        }
+//        }Equipment(int itemID, String name, int level, int attack, int defence, int gold) {
+
 
         User user = new User(userId);
 //        NPC npc = new NPC("Monkey");

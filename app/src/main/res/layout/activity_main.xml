@@ -150,6 +150,19 @@
             android:textColor="@android:color/background_light" />
 
 
+        <Button
+            android:id="@+id/store"
+
+            android:layout_width="78dp"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:layout_alignEnd="@+id/countdown"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="120dp"
+            android:background="@color/white"
+            android:text="@string/store"
+            android:textColor="@android:color/holo_blue_dark" />
+
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView experience;
     private TextView level;
     private ProgressBar progress;
-    private Button myButton, signOut;
+    private Button myButton, signOut, store;
 
     private String opponent = "Monkey";
 
@@ -77,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
     SeekBar.OnSeekBarChangeListener customSeekBarListener;
     private final CountDownLatch loginLatch = new CountDownLatch (1);
     private boolean callbackResults;
-
-    private ValueEventListener postListener;
 
     boolean playerTurn = true;
 
@@ -119,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         PushNotifications.start(getApplicationContext(), "2379b56b-67f4-449f-8993-f22342ead767");
+        store = (Button) findViewById(R.id.store);
         signOut = (Button) findViewById(R.id.sign_out);
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +126,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        store.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, StoreActivity.class));
+            }
+        });
 
         gold = (TextView) findViewById(R.id.gold);
         attack = (TextView) findViewById(R.id.attack);
@@ -136,7 +141,17 @@ public class MainActivity extends AppCompatActivity {
         level = (TextView) findViewById(R.id.level);
         progress = (ProgressBar) findViewById(R.id.progressBar);
         myButton = (Button) findViewById(R.id.rollButton);
-        Log.i("app", "tereee");
+
+//        Equipment equipment = new Equipment(100, "Wooden Knife", 3, 4,0,8);
+//        database.child("equipment").child(Integer.toString(equipment.getItemID())).setValue(equipment);
+//        Equipment equipment1 = new Equipment(200, "Wooden Platebody", 6, 0,3,6);
+//        database.child("equipment").child(Integer.toString(equipment1.getItemID())).setValue(equipment1);
+//        Equipment equipment2 = new Equipment(300, "Wooden Platelegs", 5, 0,2,4);
+//        database.child("equipment").child(Integer.toString(equipment2.getItemID())).setValue(equipment2);
+//        Equipment equipment3 = new Equipment(400, "Wooden Helmet", 4, 0,1,2);
+//        database.child("equipment").child(Integer.toString(equipment3.getItemID())).setValue(equipment3);
+//        Equipment equipment4 = new Equipment(500, "Wooden Shield", 3, 0,2,4);
+//        database.child("equipment").child(Integer.toString(equipment4.getItemID())).setValue(equipment4);
         customSeekBarListener =
                 new SeekBar.OnSeekBarChangeListener() {
                     @Override
@@ -176,19 +191,22 @@ public class MainActivity extends AppCompatActivity {
                             localUser.setNumber(user.getNumber());
                             localUser.setAttack(user.getAttack());
                             localUser.setDefence(user.getDefence());
+                            localUser.setFighting(user.getFighting());
                             updateData();
                             Log.d("app", "--------EXPERIENCE---------" + localUser.getExperience());
                             Log.d("app", "--------GOLD---------" + localUser.getGold());
                             Log.d("app", "----COUNTDOWN----" + localUser.getCountdown());
                             Log.d("app", "--------LEVEL---------" + localUser.getLevel());
                             Log.d("app", "--------NUMBER---------: " + localUser.getNumber());
+                            Log.d("app", "--------IS FIGHTING---------: " + localUser.getFighting());
 
                             attack.setText(Integer.toString(localUser.getExperience()));
                             defence.setText(Integer.toString(localUser.getLevel()));
                             gold.setText(Integer.toString(localUser.getGold()));
-
-                            progressXP = (100*localUser.getExperience())/1000;
-                            progress.setProgress(progressXP);
+                            if (localLevel != null) {
+                                progressXP = (100 * localUser.getExperience()) / localLevel.getXp();
+                                progress.setProgress(progressXP);
+                            }
                             if (firstTimeLoad) {
                                 userLoaded();
                             }
@@ -217,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("app", "number " + number);
 
-        if (localUser.getCountdown() != null) {
+        if (localUser.getCountdown() != null && localUser.getFighting() && isFighting) {
             if (currentTime - localUser.getCountdown() >= number) {
                 countdown(1000L,0L);
             }
@@ -228,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         Long elapsedTime = currentTime - localUser.getCountdown();
 
         Log.d("app", "elapsed time: " + (elapsedTime)/1000 + " isfighting: " + isFighting);
-        if (!isFighting) {
+        if (!isFighting && !localUser.getFighting()) {
             myButton.setEnabled(true);
         } else  {
             myButton.setEnabled(false);
@@ -245,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("app", "<<<<<<<<<<<<<<NUMBER>>>>>>>>>> " + number + " || " + countdownLong);
                 localUser.setCountdown(date);
                 localUser.setNumber(countdownLong);
+                localUser.setFighting(true);
                 updateData();
                 countdown(countdownLong, 0L);
             }
@@ -347,9 +366,9 @@ public class MainActivity extends AppCompatActivity {
                             progressXP = (100*localUser.getExperience())/localLevel.getXp();
                             progress.setProgress(progressXP);
 
-
-
+                            localUser.setFighting(false);
                             updateData();
+                            isFighting = false;
                         }
                     }
 
