@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="-11dp"
             app:srcCompat="@drawable/skills_layer" />
 
         <TextView
@@ -157,16 +158,16 @@
 
         <Button
             android:id="@+id/store"
-
+            android:onClick="ShowPopup"
             android:layout_width="78dp"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
             android:layout_alignEnd="@+id/countdown"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="120dp"
             android:background="@color/white"
             android:text="@string/store"
-            android:textColor="@android:color/holo_blue_dark" />
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="15dp" />
 
         <ImageView
             android:id="@+id/imageView"

@@ -24,6 +24,9 @@ public class User{
 
     public User() {
     }
+    public User(boolean isFighting, boolean isLoaded, int level, int gold, int attack, int defence, int experience, Long countdown, Long number) {
+        this.isLoaded = isLoaded; this.isFighting = isFighting; this.level = level; this.gold = gold; this.attack = attack; this.defence = defence; this.experience = experience; this.countdown = countdown; this.number = number;
+    }
 
     public void setLoaded(boolean isLoaded) {
         this.isLoaded = isLoaded;

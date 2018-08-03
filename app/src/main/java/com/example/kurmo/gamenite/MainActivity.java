@@ -1,6 +1,7 @@
 package com.example.kurmo.gamenite;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.CountDownTimer;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     int playerDefence = 1;
     int playerAttack = 1;
     int progressXP = 0;
+    Dialog myDialog;
 
     Long lastFight;
 
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         firstTimeLoad = true;
-
+        myDialog = new Dialog(this);
         auth = FirebaseAuth.getInstance();
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -172,7 +174,10 @@ public class MainActivity extends AppCompatActivity {
                 };
         loadUserData();
     }
-
+    public void ShowPopup(View v) {
+        myDialog.setContentView(R.layout.fight_result);
+        myDialog.show();
+    }
     public void loadUserData(){
         database.child("users").child(auth.getCurrentUser().getUid()).addValueEventListener(
                 new ValueEventListener() {
@@ -192,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
                             localUser.setAttack(user.getAttack());
                             localUser.setDefence(user.getDefence());
                             localUser.setFighting(user.getFighting());
+
                             updateData();
                             Log.d("app", "--------EXPERIENCE---------" + localUser.getExperience());
                             Log.d("app", "--------GOLD---------" + localUser.getGold());
@@ -200,8 +206,8 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("app", "--------NUMBER---------: " + localUser.getNumber());
                             Log.d("app", "--------IS FIGHTING---------: " + localUser.getFighting());
 
-                            attack.setText(Integer.toString(localUser.getExperience()));
-                            defence.setText(Integer.toString(localUser.getLevel()));
+                            attack.setText(Integer.toString(localUser.getAttack()));
+                            defence.setText(Integer.toString(localUser.getDefence()));
                             gold.setText(Integer.toString(localUser.getGold()));
                             if (localLevel != null) {
                                 progressXP = (100 * localUser.getExperience()) / localLevel.getXp();

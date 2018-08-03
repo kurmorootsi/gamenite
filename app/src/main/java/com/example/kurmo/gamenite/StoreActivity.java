@@ -40,7 +40,9 @@ public class StoreActivity extends AppCompatActivity{
 
         }
         database = FirebaseDatabase.getInstance().getReference();
+
         localUser = new User(user.getUid());
+
 
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -85,10 +87,15 @@ public class StoreActivity extends AppCompatActivity{
                          Log.i("app", "--------UID---------" + auth.getCurrentUser().getUid());
                          User user = dataSnapshot.getValue(User.class);
                          if (user != null) {
+                             localUser.setExperience(user.getExperience());
                              localUser.setLevel(user.getLevel());
+                             localUser.setSeekbar(user.getSeekbar());
                              localUser.setGold(user.getGold());
+                             localUser.setCountdown(user.getCountdown());
+                             localUser.setNumber(user.getNumber());
                              localUser.setAttack(user.getAttack());
                              localUser.setDefence(user.getDefence());
+                             localUser.setFighting(user.getFighting());
                              Log.d("app", "--------GOLD---------" + localUser.getGold());
                              Log.d("app", "--------LEVEL---------" + localUser.getLevel());
                          }
