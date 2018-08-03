@@ -109,8 +109,6 @@ public class StoreActivity extends AppCompatActivity{
                      }
                  }
          );
-
-
     }
     public void registerClass(int id) {
         final Equipment chosenEquipment = new Equipment(id);

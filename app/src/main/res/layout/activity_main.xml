@@ -16,6 +16,67 @@
         android:padding="@dimen/activity_horizontal_margin">
 
 
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/imageView2">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/Monkey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Monkey"
+                    android:onClick="chooseOpponent"/>
+
+                <Button
+                    android:id="@+id/Goblin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Goblin"
+                    android:onClick="chooseOpponent"/>
+
+                <Button
+                    android:id="@+id/Wolf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Wolf"
+                    android:onClick="chooseOpponent"/>
+
+                <Button
+                    android:id="@+id/Bear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Bear"
+                    android:onClick="chooseOpponent"/>
+
+                <Button
+                    android:id="@+id/Denis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Denis"
+                    android:onClick="chooseOpponent"/>
+
+                <Button
+                    android:id="@+id/Kurmo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Kurmo"
+                    android:onClick="chooseOpponent"/>
+            </LinearLayout>
+        </HorizontalScrollView>
+
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
@@ -158,7 +219,6 @@
 
         <Button
             android:id="@+id/store"
-            android:onClick="ShowPopup"
             android:layout_width="78dp"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/countdown"
@@ -166,6 +226,19 @@
             android:layout_marginBottom="120dp"
             android:background="@color/white"
             android:text="@string/store"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="15dp" />
+
+        <Button
+            android:id="@+id/result"
+            android:onClick="ShowPopup"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/countdown"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="190dp"
+            android:background="@color/white"
+            android:text="@string/result"
             android:textColor="@android:color/holo_blue_dark"
             android:textSize="15dp" />
 

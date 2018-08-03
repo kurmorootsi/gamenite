@@ -1,12 +1,15 @@
 package com.example.kurmo.gamenite;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pusher.pushnotifications.PushNotifications;
 
@@ -40,7 +44,6 @@ import java.util.concurrent.CountDownLatch;
 
 import static java.lang.Math.round;
 
-
 public class MainActivity extends AppCompatActivity {
 
     int playerGold = 0;
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     int playerDefence = 1;
     int playerAttack = 1;
     int progressXP = 0;
+
     Dialog myDialog;
 
     Long lastFight;
@@ -63,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     private User localUser;
     private Level localLevel;
 
+    private Button list[];
+
     private TextView winner_text;
     private TextView attack;
     private TextView defence;
@@ -70,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView experience;
     private TextView level;
     private ProgressBar progress;
-    private Button myButton, signOut, store;
+    private Button myButton, signOut, store, result;
 
     private String opponent = "Monkey";
 
@@ -121,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
         PushNotifications.start(getApplicationContext(), "2379b56b-67f4-449f-8993-f22342ead767");
         store = (Button) findViewById(R.id.store);
         signOut = (Button) findViewById(R.id.sign_out);
+        result = (Button) findViewById(R.id.result);
+
+
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,16 +173,15 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onStartTrackingTouch(SeekBar seekBar) {
-
                     }
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-
                     }
                 };
         loadUserData();
     }
+
     public void ShowPopup(View v) {
         myDialog.setContentView(R.layout.fight_result);
         myDialog.show();
@@ -228,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
+
     public void userLoaded() {
         if (localUser.getCountdown() == null) {
             localUser.setCountdown(1L);
@@ -258,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
             myButton.setEnabled(false);
             countdown(number - elapsedTime, elapsedTime);
         }
+
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,6 +284,11 @@ public class MainActivity extends AppCompatActivity {
                 countdown(countdownLong, 0L);
             }
         });
+    }
+
+    public void chooseOpponent(View v) {
+        int sopponent = v.getId();
+        Log.d("app", "oppponent: " + sopponent);
     }
 
     public void countdown(final Long countdownLong, final Long elapsedLong) {
@@ -331,8 +346,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
-        }
+    }
 
     public void addExperience(boolean winner, int experience, int goldAmount) {
         if (winner) {
@@ -424,13 +438,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public int calculateHit(int defence, int attack, int level) {
-        double number = (double) randomNumberGenerator.nextInt(attack + 1);
+        double number = 0;
+        if (level > 10) {
+            number = (double) randomNumberGenerator.nextInt(7);
+        }
 
-        double defenceF = (double) defence;
-        double attackF = (double) attack;
-        double levelF = (double) level;
+        double d = (double) defence;
+        double a = (double) attack;
+        double l = (double) level;
 
-        double dealtDamage = ((100-defenceF+attack)/100)*(number+levelF);
+//        double dealtDamage = ((100-d+attack)/100)*(number+l);
+        double maxHit = (1.3+(a/10)+(l/80)+((a*l)/640));
+        if (number >= maxHit) {
+            maxHit = (1.3+(a/10)+(l/80)+((a*l)/640));
+        } else {
+            maxHit = (1.3+(a/10)+(l/80)+((a*l)/640))-number;
+        }
+        double smallPart = maxHit * 0.25;
+        double bigPart = maxHit * 0.75;
+
+        double dealtDamage = (bigPart)-((d*(bigPart))/100)+(smallPart);
 
         int dealtInt = (int) dealtDamage;
 
