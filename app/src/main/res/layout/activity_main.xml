@@ -59,21 +59,6 @@
                     android:text="Bear"
                     android:onClick="chooseOpponent"/>
 
-                <Button
-                    android:id="@+id/Denis"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Denis"
-                    android:onClick="chooseOpponent"/>
-
-                <Button
-                    android:id="@+id/Kurmo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="Kurmo"
-                    android:onClick="chooseOpponent"/>
             </LinearLayout>
         </HorizontalScrollView>
 

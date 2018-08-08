@@ -8,6 +8,7 @@ public class NPC {
     private int level;
     private int attack;
     private int gold;
+    private int id;
     private int defence;
     private int xp;
     private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
@@ -15,9 +16,10 @@ public class NPC {
 
     public NPC() {
     }
-    public NPC(String name) {
-        this.name = name;
+    public NPC(int id) {
+        this.id = id;
     }
+
     public String getName() {
         return this.name;
     }
@@ -31,6 +33,9 @@ public class NPC {
     }
     public int getattack() {
         return attack;
+    }
+    public int getId() {
+        return id;
     }
     public int getgold() {
         return gold;

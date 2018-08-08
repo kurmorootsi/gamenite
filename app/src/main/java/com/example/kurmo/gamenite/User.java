@@ -14,6 +14,7 @@ public class User{
     private String userId;
     private boolean isFighting;
     private int level;
+    private int last_opp;
     private int seekbar;
     private int gold;
     private int attack;
@@ -27,7 +28,8 @@ public class User{
     public User(boolean isFighting, boolean isLoaded, int level, int gold, int attack, int defence, int experience, Long countdown, Long number) {
         this.isLoaded = isLoaded; this.isFighting = isFighting; this.level = level; this.gold = gold; this.attack = attack; this.defence = defence; this.experience = experience; this.countdown = countdown; this.number = number;
     }
-
+    public int getLast_opp() {return last_opp;}
+    public void setLast_opp(int last_opp) {this.last_opp = last_opp;}
     public void setLoaded(boolean isLoaded) {
         this.isLoaded = isLoaded;
     }

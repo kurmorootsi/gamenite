@@ -1,27 +1,17 @@
 package com.example.kurmo.gamenite;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.CountDownTimer;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pusher.pushnotifications.PushNotifications;
 
@@ -33,16 +23,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Date;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
-
-import static java.lang.Math.round;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -77,8 +60,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView level;
     private ProgressBar progress;
     private Button myButton, signOut, store, result;
-
-    private String opponent = "Monkey";
 
     private DatabaseReference database;
     private FirebaseAuth.AuthStateListener authListener;
@@ -115,13 +96,13 @@ public class MainActivity extends AppCompatActivity {
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user == null) {
-                    // user auth state is changed - user is null
-                    // launch login activity
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    finish();
-                }
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user == null) {
+                // user auth state is changed - user is null
+                // launch login activity
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            }
             }
         };
         PushNotifications.start(getApplicationContext(), "2379b56b-67f4-449f-8993-f22342ead767");
@@ -163,22 +144,23 @@ public class MainActivity extends AppCompatActivity {
 //        database.child("equipment").child(Integer.toString(equipment3.getItemID())).setValue(equipment3);
 //        Equipment equipment4 = new Equipment(500, "Wooden Shield", 3, 0,2,4);
 //        database.child("equipment").child(Integer.toString(equipment4.getItemID())).setValue(equipment4);
+
         customSeekBarListener =
-                new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                        updateSeekbar(progress);
-                        Log.d("app", "seekbar: " + localUser.getSeekbar());
-                    }
+            new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                    updateSeekbar(progress);
+                    Log.d("app", "seekbar: " + localUser.getSeekbar());
+                }
 
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                    }
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
 
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                    }
-                };
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                }
+            };
         loadUserData();
     }
 
@@ -188,52 +170,52 @@ public class MainActivity extends AppCompatActivity {
     }
     public void loadUserData(){
         database.child("users").child(auth.getCurrentUser().getUid()).addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get Post object and use the values to update the UI
-                        Log.i("app", "--------UID---------" + auth.getCurrentUser().getUid());
-                        User user = dataSnapshot.getValue(User.class);
+            new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Get Post object and use the values to update the UI
+                    Log.i("app", "--------UID---------" + auth.getCurrentUser().getUid());
+                    User user = dataSnapshot.getValue(User.class);
 //                        localUser.setUserID(auth.getCurrentUser().getUid());
-                        if (user != null) {
-                            localUser.setExperience(user.getExperience());
-                            localUser.setLevel(user.getLevel());
-                            localUser.setSeekbar(user.getSeekbar());
-                            localUser.setGold(user.getGold());
-                            localUser.setCountdown(user.getCountdown());
-                            localUser.setNumber(user.getNumber());
-                            localUser.setAttack(user.getAttack());
-                            localUser.setDefence(user.getDefence());
-                            localUser.setFighting(user.getFighting());
+                    if (user != null) {
+                        localUser.setExperience(user.getExperience());
+                        localUser.setLevel(user.getLevel());
+                        localUser.setSeekbar(user.getSeekbar());
+                        localUser.setGold(user.getGold());
+                        localUser.setCountdown(user.getCountdown());
+                        localUser.setNumber(user.getNumber());
+                        localUser.setAttack(user.getAttack());
+                        localUser.setDefence(user.getDefence());
+                        localUser.setFighting(user.getFighting());
 
-                            updateData();
-                            Log.d("app", "--------EXPERIENCE---------" + localUser.getExperience());
-                            Log.d("app", "--------GOLD---------" + localUser.getGold());
-                            Log.d("app", "----COUNTDOWN----" + localUser.getCountdown());
-                            Log.d("app", "--------LEVEL---------" + localUser.getLevel());
-                            Log.d("app", "--------NUMBER---------: " + localUser.getNumber());
-                            Log.d("app", "--------IS FIGHTING---------: " + localUser.getFighting());
+                        updateData();
+                        Log.d("app", "--------EXPERIENCE---------" + localUser.getExperience());
+                        Log.d("app", "--------GOLD---------" + localUser.getGold());
+                        Log.d("app", "----COUNTDOWN----" + localUser.getCountdown());
+                        Log.d("app", "--------LEVEL---------" + localUser.getLevel());
+                        Log.d("app", "--------NUMBER---------: " + localUser.getNumber());
+                        Log.d("app", "--------IS FIGHTING---------: " + localUser.getFighting());
 
-                            attack.setText(Integer.toString(localUser.getAttack()));
-                            defence.setText(Integer.toString(localUser.getDefence()));
-                            gold.setText(Integer.toString(localUser.getGold()));
-                            if (localLevel != null) {
-                                progressXP = (100 * localUser.getExperience()) / localLevel.getXp();
-                                progress.setProgress(progressXP);
-                            }
-                            if (firstTimeLoad) {
-                                userLoaded();
-                            }
+                        attack.setText(Integer.toString(localUser.getAttack()));
+                        defence.setText(Integer.toString(localUser.getDefence()));
+                        gold.setText(Integer.toString(localUser.getGold()));
+                        if (localLevel != null) {
+                            progressXP = (100 * localUser.getExperience()) / localLevel.getXp();
+                            progress.setProgress(progressXP);
+                        }
+                        if (firstTimeLoad) {
+                            userLoaded();
                         }
                     }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        // Getting Post failed, log a message
-                        Log.w("app", "loadPost:onCancelled", databaseError.toException());
-                        // ...
-                    }
                 }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w("app", "loadPost:onCancelled", databaseError.toException());
+                    // ...
+                }
+            }
         );
     }
 
@@ -247,12 +229,13 @@ public class MainActivity extends AppCompatActivity {
         firstTimeLoad = false;
         Long currentTime = new Date().getTime();
         Long number = localUser.getNumber();
+        int last_opp = localUser.getLast_opp();
 
         Log.d("app", "number " + number);
 
         if (localUser.getCountdown() != null && localUser.getFighting() && isFighting) {
             if (currentTime - localUser.getCountdown() >= number) {
-                countdown(1000L,0L);
+                countdown(1000L,0L, last_opp);
             }
             isFighting = currentTime - localUser.getCountdown() <= number;
             Log.d("app", "is this: " + (currentTime - localUser.getCountdown()) + " smaller than this: " + number);
@@ -265,33 +248,26 @@ public class MainActivity extends AppCompatActivity {
             myButton.setEnabled(true);
         } else  {
             myButton.setEnabled(false);
-            countdown(number - elapsedTime, elapsedTime);
+            countdown(number - elapsedTime, elapsedTime, last_opp);
         }
-
-        myButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myButton.setEnabled(false);
-                isFighting = true;
-                Long date = new Date().getTime();
-                int number = randomNumberGenerator.nextInt(2100);
-                final long countdownLong = number*1000L;
-                Log.d("app", "<<<<<<<<<<<<<<NUMBER>>>>>>>>>> " + number + " || " + countdownLong);
-                localUser.setCountdown(date);
-                localUser.setNumber(countdownLong);
-                localUser.setFighting(true);
-                updateData();
-                countdown(countdownLong, 0L);
-            }
-        });
     }
 
     public void chooseOpponent(View v) {
         int sopponent = v.getId();
-        Log.d("app", "oppponent: " + sopponent);
+        isFighting = true;
+        Long date = new Date().getTime();
+        int number = randomNumberGenerator.nextInt(2100);
+        final long countdownLong = number*1000L;
+        Log.d("app", "<<<<<<<<<<<<<<NUMBER>>>>>>>>>> " + number + " || " + countdownLong);
+        localUser.setCountdown(date);
+        localUser.setNumber(countdownLong);
+        localUser.setFighting(true);
+        localUser.setLast_opp(sopponent);
+        updateData();
+        countdown(countdownLong, 0L, sopponent);
     }
 
-    public void countdown(final Long countdownLong, final Long elapsedLong) {
+    public void countdown(final Long countdownLong, final Long elapsedLong, final int opp_id) {
         countDownTimer = new CountDownTimer(countdownLong, 1000) {
             TextView countdown = (TextView) findViewById(R.id.countdown);
 
@@ -304,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 myButton.setEnabled(true);
                 Log.d("app", "mybutton enabled: " + myButton.isEnabled() + " isfighting: " + isFighting);
                 countdown.setText("");
-                fight();
+                fight(opp_id);
             }
         }.start();
     }
@@ -320,17 +296,18 @@ public class MainActivity extends AppCompatActivity {
         database.child("users").child(localUser.getUserId()).setValue(localUser);
     }
 
-    public void fight() {
+    public void fight(int opp_id) {
 
-        final NPC npc = new NPC(opponent);
+        final NPC npc = new NPC(opp_id);
 
         database = FirebaseDatabase.getInstance().getReference();
 
-        database.child("npc").child(opponent).addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        NPC npc_data = dataSnapshot.getValue(NPC.class);
+        database.child("npc").child(Integer.toString(npc.getId())).addValueEventListener(
+            new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    NPC npc_data = dataSnapshot.getValue(NPC.class);
+                    if (npc_data != null) {
                         npc.setlevel(npc_data.getlevel());
                         npc.setattack(npc_data.getattack());
                         npc.setdefence(npc_data.getdefence());
@@ -339,12 +316,13 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("app", "NPC GOLD: " + npc_data.getgold());
                         calculateWinner(npc);
                     }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w("app", "loadPost:onCancelled", databaseError.toException());
-                    }
                 }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.w("app", "loadPost:onCancelled", databaseError.toException());
+                }
+            }
         );
     }
 
@@ -368,39 +346,37 @@ public class MainActivity extends AppCompatActivity {
         localLevel = new Level();
         Log.d("app", "ADDING LEVEL: " + Integer.toString(localUser.getLevel()));
         database.child("levels").child(Integer.toString(localUser.getLevel()+1)).addValueEventListener(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get Post object and use the values to update the UI
-                        Level level = dataSnapshot.getValue(Level.class);
-                        Log.d("app", "ALMOST THERE: " + level);
-                        if (level != null) {
-                            localLevel.setLevel(level.getLevel());
-                            localLevel.setXp(level.getXp());
-                            Log.d("app", "LOCAL LEVEL: " + localLevel.getLevel());
-                            Log.d("app", "LOCAL XP: " + localLevel.getXp());
-                            if (localUser.getExperience() >= localLevel.getXp()) {
-                                Log.d("app", "TEST: " + localUser.getExperience() + "|" + localLevel.getXp());
-                                localUser.addLevel();
-                            }
-                            progressXP = (100*localUser.getExperience())/localLevel.getXp();
-                            progress.setProgress(progressXP);
-
-                            localUser.setFighting(false);
-                            updateData();
-                            isFighting = false;
+            new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Get Post object and use the values to update the UI
+                    Level level = dataSnapshot.getValue(Level.class);
+                    Log.d("app", "ALMOST THERE: " + level);
+                    if (level != null) {
+                        localLevel.setLevel(level.getLevel());
+                        localLevel.setXp(level.getXp());
+                        Log.d("app", "LOCAL LEVEL: " + localLevel.getLevel());
+                        Log.d("app", "LOCAL XP: " + localLevel.getXp());
+                        if (localUser.getExperience() >= localLevel.getXp()) {
+                            Log.d("app", "TEST: " + localUser.getExperience() + "|" + localLevel.getXp());
+                            localUser.addLevel();
                         }
-                    }
+                        progressXP = (100*localUser.getExperience())/localLevel.getXp();
+                        progress.setProgress(progressXP);
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        // Getting Post failed, log a message
-                        Log.w("app", "loadPost:onCancelled", databaseError.toException());
-                        // ...
+                        localUser.setFighting(false);
+                        updateData();
+                        isFighting = false;
                     }
                 }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting Post failed, log a message
+                    Log.w("app", "loadPost:onCancelled", databaseError.toException());
+                    // ...
+                }
+            }
         );
-
     }
     public void calculateWinner(NPC npc) {
         playerLife = 100;

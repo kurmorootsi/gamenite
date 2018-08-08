@@ -126,8 +126,7 @@ public class SignupActivity extends AppCompatActivity {
 
 
         User user = new User(userId);
-//        NPC npc = new NPC("Monkey");
-//        database.child("npc").child(npc.getName()).setValue(npc);
+
         database.child("users").child(userId).setValue(user);
     }
 }
