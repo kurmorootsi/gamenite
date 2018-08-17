@@ -40,6 +40,10 @@
             android:label="@string/title_activity_store"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".SkillActivity"
+            android:label="@string/title_activity_skill"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".fight_result"
             android:label="@string/title_activity_store"
             android:theme="@style/AppTheme.NoActionBar" />

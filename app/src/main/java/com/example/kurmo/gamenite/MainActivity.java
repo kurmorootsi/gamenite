@@ -124,6 +124,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, StoreActivity.class));
             }
         });
+        result.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, SkillActivity.class));
+            }
+        });
 
         gold = (TextView) findViewById(R.id.gold);
         attack = (TextView) findViewById(R.id.attack);
@@ -135,7 +141,8 @@ public class MainActivity extends AppCompatActivity {
         myButton = (Button) findViewById(R.id.rollButton);
 
 //        Equipment equipment = new Equipment(100, "Wooden Knife", 3, 4,0,8);
-//        database.child("equipment").child(Integer.toString(equipment.getItemID())).setValue(equipment);
+//        Tree log = new Tree(1);
+//        database.child("log").child(Integer.toString(log.getId())).setValue(log);
 //        Equipment equipment1 = new Equipment(200, "Wooden Platebody", 6, 0,3,6);
 //        database.child("equipment").child(Integer.toString(equipment1.getItemID())).setValue(equipment1);
 //        Equipment equipment2 = new Equipment(300, "Wooden Platelegs", 5, 0,2,4);
@@ -187,7 +194,8 @@ public class MainActivity extends AppCompatActivity {
                         localUser.setAttack(user.getAttack());
                         localUser.setDefence(user.getDefence());
                         localUser.setFighting(user.getFighting());
-
+                        localUser.setWclog(user.getWclog());
+                        localUser.setWclevel(user.getWclevel());
                         updateData();
                         Log.d("app", "--------EXPERIENCE---------" + localUser.getExperience());
                         Log.d("app", "--------GOLD---------" + localUser.getGold());

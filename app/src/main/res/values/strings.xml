@@ -2,6 +2,7 @@
     <string name="app_name">Gamenite</string>
     <string name="button_text">Fight</string>
     <string name="store">Store</string>
+    <string name="skill">Skilling</string>
     <string name="result">View Result</string>
 
 
@@ -18,6 +19,7 @@
     <string name="title_activity_profile">Gamenite</string>
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_store">Store</string>
+    <string name="title_activity_skill">Skilling</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="hint_name">Fullname</string>

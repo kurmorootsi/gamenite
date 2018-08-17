@@ -18,6 +18,8 @@ public class User{
     private int seekbar;
     private int gold;
     private int attack;
+    private int wclevel;
+    private int wclog;
     private int defence;
     public int experience;
     private Long countdown;
@@ -43,7 +45,18 @@ public class User{
     public void setNumber(Long number) {this.number = number;}
 
     public Long getNumber() {return number;}
+    public void setWclevel(int wclevel) {this.wclevel = wclevel;}
+    public void setWclog(int wclog) {this.wclog = wclog;}
 
+    public int getWclevel() {
+        return wclevel;
+    }
+
+    public int getWclog() {
+        return wclog;
+    }
+    public void addWclevel() {this.wclevel++;}
+    public void addWclog(int wclog) {this.wclog += wclog;}
     public User(String userId) {
         this.userId = userId;
     }
